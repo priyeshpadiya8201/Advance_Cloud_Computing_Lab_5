@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
+
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         response = {
@@ -16,8 +17,17 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-server = HTTPServer(("0.0.0.0", 80), Handler)
 
-print("Server running on port 80")
+def handler(event):
+    return {
+        "status": "ok",
+        "version": "1.0"
+    }
 
-server.serve_forever()
+
+if __name__ == "__main__":
+    server = HTTPServer(("0.0.0.0", 80), Handler)
+
+    print("Server running on port 80")
+
+    server.serve_forever()
