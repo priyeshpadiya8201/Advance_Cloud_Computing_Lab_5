@@ -19,7 +19,7 @@ phases:
       - docker build -t $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       - docker push $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - |
-          printf '[{"name":"Main","imageUri":"%s"}]' "$ECR_URI:$242417635320.dkr.ecr.ap-south-1.amazonaws.com/lab5-app" > imagedefinitions.json
+          printf '[{"name":"Main","imageUri":"%s"}]' "$ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION" > imagedefinitions.json
 
 artifacts:
   files:
