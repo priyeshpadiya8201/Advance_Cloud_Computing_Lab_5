@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - pip install pytest
+  pre_build:
+    commands:
+      - pytest test_app.py -v
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $ECR_URI
+  build:
+    commands:
+      - docker build -t $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker push $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - printf '[{"name":"lab5-app","imageUri":"%s"}]' "$ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION" > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
