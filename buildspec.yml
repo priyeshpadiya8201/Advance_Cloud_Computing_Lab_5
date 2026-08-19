@@ -4,15 +4,22 @@ phases:
   install:
     commands:
       - pip install pytest
+
   pre_build:
     commands:
-      - pytest test_app.py -v
+      - 'echo "AWS Region: $AWS_DEFAULT_REGION"'
+      - 'echo "ECR_URI: $ECR_URI"'
+      - aws sts get-caller-identity
+      - aws ecr describe-repositories --region ap-south-1
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $ECR_URI
+
   build:
     commands:
+      - pytest test_app.py -v
       - docker build -t $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       - docker push $ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - printf '[{"name":"lab5-app","imageUri":"%s"}]' "$ECR_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION" > imagedefinitions.json
+      - |
+          printf '[{"name":"lab5-app","imageUri":"%s"}]' "$ECR_URI:$242417635320.dkr.ecr.ap-south-1.amazonaws.com/lab5-app" > imagedefinitions.json
 
 artifacts:
   files:
